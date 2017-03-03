@@ -1,4 +1,4 @@
-# braml
+# BRAML
 BRAML (Bracket Markup Language) is an alternative to html.
 
 Tags in BRAML are started with a '%'. e.g. '%div'

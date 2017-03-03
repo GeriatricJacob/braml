@@ -11,6 +11,10 @@
   },
   "author": "Towtow10",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Towtow10/braml.git"
+  },
   "dependencies": {
     "fs-jetpack": "^0.12.0"
   }

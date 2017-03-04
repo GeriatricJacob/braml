@@ -1,6 +1,6 @@
 {
   "name": "braml",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "An alternative to HTML.",
   "bin": {
     "braml": "index.js"

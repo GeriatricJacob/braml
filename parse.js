@@ -55,7 +55,6 @@ function parse(tag) {
                         brack += '$';
                         var x = parse(brack);
                         html += `<${id} ${props}>${x}</${id}>`;
-                        num--;
                         break;
                       }
                     }

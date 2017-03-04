@@ -13,3 +13,9 @@ THE FILE MUST END WITH '$' without quotes.
 
 # Usage
 To compile a file to HTML simply run 'braml input.braml ouput.html'
+
+or directly
+
+`var braml = require('braml');
+braml('%h1(){}$'); //<h1></h1>
+`

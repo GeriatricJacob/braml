@@ -8,5 +8,12 @@ var fileIn = userArgs[0];
 var fileOut = userArgs[1];
 var fileContents = jetpack.read(fileIn);
 
-jetpack.write(fileOut, parse(fileContents));
-console.log(`Compiled ${fileIn} to ${fileOut}`);
+var ret = parse(fileContents);
+
+if (ret[0] == true) {
+  jetpack.write(fileOut, ret[1]);
+  console.log(`Compiled ${fileIn} to ${fileOut}`);
+}
+else {
+  console.log('Was not compiled due to errors.');
+}

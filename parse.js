@@ -1,5 +1,6 @@
 var nextChar = require('./nextChar.js');
 function parse(tag) {
+  var doiret = true;
   var html = '';
   var num = 0;
   var list = '';
@@ -9,91 +10,124 @@ function parse(tag) {
   var props = '';
   var brack = '';
   while (true) {
-    brack = '';
     props = '';
-    id = '';
     list = '';
+    id = '';
     temp = nextChar(num, tag);
     num = temp[0];
     char = temp[1];
-    if (char == '%') {//Is it a tag?
-      while (true) {//Parse id
+    if (char == '$') {//Is it an exit character?
+      break;
+    }
+    else if (char == '`') {//is it a ` string?
+      while (true) {
+        temp = nextChar(num, tag, true);
+        num = temp[0];
+        char = temp[1];
+        if (char == '`') {
+          html += list;
+          break;
+        }
+        else {
+          list += char;
+        }
+      }
+    }
+    else if (char == "'") {//is it a ' string?
+      while (true) {
+        temp = nextChar(num, tag, true);
+        num = temp[0];
+        char = temp[1];
+        if (char == "'") {
+          html += list;
+          break;
+        }
+        else {
+          list += char;
+        }
+      }
+    }
+    else if (char == '%') {//Is it a tag?
+      while (true) {//Process tag type.
         temp = nextChar(num, tag);
         num = temp[0];
         char = temp[1];
-        if (char != '(') {
-          id += char;
-        }
-        else if (char == '(') {
-          while (true) {//Parse properties
+        if (char == '(') {
+          id += list;
+          list = '';
+          while (true) {//Process properties.
             temp = nextChar(num, tag);
             num = temp[0];
             char = temp[1];
-            if (char != ')') {
-              props += char;
-            }
-            else if (char == ')') {
-              temp = nextChar(num, tag);
-              num = temp[0];
-              char = temp[1];
-              if (char == '{') {
-                while (true) {//Parse Block
+            if (char == ')') {
+              props += list;
+              list = '';
+              while (true) {//Process child nodes.
+                temp = nextChar(num, tag);
+                num = temp[0];
+                char = temp[1];
+                if (char == '{') {
                   temp = nextChar(num, tag);
                   num = temp[0];
                   char = temp[1];
-
-                  if (char != '}') {
+                  if (char == '}') {
+                    html += `<${id} ${props}></${id}>`;
+                    break;
+                  }
+                  else {
                     num--;
                     while (true) {
-                      temp = nextChar(num, tag);
+                      temp = nextChar(num, tag, true);
                       num = temp[0];
                       char = temp[1];
-                      if(char != '$') {
-                        brack += char;
-                      }
-                      else if (char == '$') {
-                        brack += '$';
-                        var x = parse(brack);
-                        html += `<${id} ${props}>${x}</${id}>`;
+                      if (char == '}') {
+                        if (list.charAt(0) == '%') {
+                          list += '}$';
+                        }
+                        var x = parse(list);
+                        html += `<${id} ${props}>${x[1]}</${id}>`;
                         break;
+                      }
+                      else {
+                        list += char;
                       }
                     }
                     break;
                   }
-                  else if (char == '}') {
-                    html += `<${id} ${props}></${id}>`;
-                    break;
-                  }
+                }
+                else {
+                  console.error(`Error, unexpected symbol '${char}'.`);
+                  doiret = false;
+                  break;
                 }
               }
-              else {
-                throw `Error, '${char}' was not expected at this time.`
-              }
               break;
+            }
+            else {
+              list += char;
             }
           }
           break;
         }
-      }
-    }
-    else if (char == '`') {
-      while (true) {
-        temp = nextChar(num, tag);
-        num = temp[0];
-        char = temp[1];
-        if (char != '`') {
+        else {
           list += char;
         }
-        else {
-          html += list;
-          break;
-        }
+      }
+      if (doiret == false) {
+        break;
       }
     }
-    else if (char == '$') {
+    else {
+      console.error(`Error, unexpected symbol '${char}'.`);
+      doiret = false;
       break;
     }
   }
-  return html;
+  if (doiret) {
+    return [true, html];
+  }
+  else {
+    return [false];
+  }
 }
 module.exports = parse;

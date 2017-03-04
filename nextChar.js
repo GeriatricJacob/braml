@@ -1,24 +1,17 @@
-var stringOpen = false;
-function nextChar(char, tag) {
+function nextChar(num, tag, whitespace) {
+  whitespace = whitespace || false;
   while (true) {
-    if (!/\s/.test(tag.charAt(char)) && !stringOpen) {
-      if (tag.charAt(char) == '`') {
-        stringOpen = true;
-      }
-      var ret = tag.charAt(char);
-      char += 1;
-      return [char, ret];
+    char = tag.charAt(num);
+    if(whitespace == false && !/\s/.test(char)) {
+      num++;
+      return [num++, char];
     }
-    else if (stringOpen) {
-      var ret = tag.charAt(char);
-      char += 1;
-      return [char, ret];
-      if (tag.charAt(char) == '`') {
-        stringOpen = false;
-      }
+    else if (whitespace == true) {
+      num++;
+      return [num++, char];
     }
     else {
-      char += 1;
+      num++;
     }
   }
 }

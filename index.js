@@ -74,19 +74,21 @@ function parse(tag) {
                   temp = nextChar(num, tag);
                   num = temp[0];
                   char = temp[1];
+
                   if (char != '}') {
                     num--;
                     while (true) {
                       temp = nextChar(num, tag);
                       num = temp[0];
                       char = temp[1];
-                      if(char != '}') {
+                      if(char != '$') {
                         brack += char;
                       }
-                      else if (char == '}') {
-                        brack += '}$';
+                      else if (char == '$') {
+                        brack += '$';
                         var x = parse(brack);
                         html += `<${id} ${props}>${x}</${id}>`;
+                        num--;
                         break;
                       }
                     }
